@@ -98,7 +98,7 @@ repositories {
 
 apply plugin: 'java'
 
-// Enable Error Prone and API plugins
+// Enable Error Prone and APT plugins
 apply plugin: 'net.ltgt.errorprone'
 apply plugin: 'net.ltgt.apt'
 
