@@ -1,10 +1,9 @@
 # Guava Beta Checker
 
-An [error-prone](https://github.com/google/error-prone) plugin that checks for
-usages of [Guava](https://github.com/google/guava) APIs that are annotated with
-the `@Beta` annotation. Such APIs should _never_ be used in library code that
-other projects may depend on; this checker is to help library projects ensure
-that they don't use them.
+An [error-prone] plugin that checks for usages of [Guava] APIs that are
+annotated with the [`@Beta`] annotation. Such APIs should _never_ be used in
+library code that other projects may depend on; this checker is to help library
+projects ensure that they don't use them.
 
 Example error:
 
@@ -74,3 +73,7 @@ In `pom.xml`:
 ```
 
 TODO: Add examples for at least Gradle and Bazel.
+
+[error-prone]: https://github.com/google/error-prone
+[Guava]: https://github.com/google/guava
+[`@Beta`]: http://google.github.io/guava/releases/snapshot-jre/api/docs/com/google/common/annotations/Beta.html
