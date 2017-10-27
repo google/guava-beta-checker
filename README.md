@@ -72,7 +72,58 @@ In `pom.xml`:
 </build>
 ```
 
-TODO: Add examples for at least Gradle and Bazel.
+### Gradle
+
+Your `build.gradle` file(s) should have the following things. Add them to what's
+already in your files as appropriate.
+
+```groovy
+// Add the gradle plugins that are needed for Error Prone plugin support
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "net.ltgt.gradle:gradle-errorprone-plugin:0.0.13"
+    classpath "net.ltgt.gradle:gradle-apt-plugin:0.12"
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+apply plugin: 'java'
+
+// Enable Error Prone and API plugins
+apply plugin: 'net.ltgt.errorprone'
+apply plugin: 'net.ltgt.apt'
+
+dependencies {
+  // Add an APT dependency on the beta checker
+  apt group: 'com.google.guava', name: 'guava-beta-checker', version: '1.0-SNAPSHOT'
+}
+
+configurations.errorprone {
+  resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.1.2'
+}
+
+compileJava {
+  // Remove these compilerArgs to keep all checks enabled
+  options.compilerArgs += ["-XepDisableAllChecks", "-Xep:BetaApi:ERROR"]
+}
+```
+
+### Bazel
+
+Bazel Java targets use the Error Prone compiler by default. To use the Beta
+Checker with Bazel, you'll need to create a `java_plugin` target for the
+Beta Checker and then add that target to the `plugins` attribute of any
+Java targets it should run on.
+
+TODO: Add an example of how to do this.
 
 [error-prone]: https://github.com/google/error-prone
 [Guava]: https://github.com/google/guava
