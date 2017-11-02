@@ -1,9 +1,9 @@
 # Guava Beta Checker
 
-An [error-prone] plugin that checks for usages of [Guava] APIs that are
+An [Error Prone] plugin that checks for usages of [Guava] APIs that are
 annotated with the [`@Beta`] annotation. Such APIs should _never_ be used in
-library code that other projects may depend on; this checker is to help library
-projects ensure that they don't use them.
+library code that other projects may depend on; using the Beta Checker can help
+library projects ensure that they don't use them.
 
 Example error:
 
@@ -16,13 +16,13 @@ src/main/java/foo/MyClass.java:14: error: [BetaApi] @Beta APIs should not be use
 
 ## Usage
 
-Using the checker requires configuring your project to build with the
-error-prone Java compiler. By default, this enables a lot of useful
-checks for a variety of common bugs. However, if you just want to use the
-`@Beta` checker, the other checks can be disabled.
+Using the Beta Checker requires configuring your project to build with the Error
+Prone Java compiler. By default, this enables a lot of useful checks for a
+variety of common bugs. However, if you just want to use the Beta Checker, the
+other checks can be disabled.
 
-The usage examples below will show how to use the `@Beta` checker only,
-with notes for what to remove if you want all checks.
+The usage examples below will show how to use the Beta Checker only, with notes
+for what to remove if you want all checks.
 
 ### Maven
 
@@ -63,7 +63,7 @@ In `pom.xml`:
           <groupId>com.google.errorprone</groupId>
           <artifactId>error_prone_core</artifactId>
           <!-- override plexus-compiler-javac-errorprone's dependency with the
-               latest error-prone version -->
+               latest Error Prone version -->
           <version>${errorprone.version}</version>
         </dependency>
       </dependencies>
@@ -103,7 +103,7 @@ apply plugin: 'net.ltgt.apt'
 
 dependencies {
   // Add an APT dependency on the beta checker
-  apt group: 'com.google.guava', name: 'guava-beta-checker', version: '1.0-SNAPSHOT'
+  apt group: 'com.google.guava', name: 'guava-beta-checker', version: 'HEAD-SNAPSHOT'
 }
 
 configurations.errorprone {
@@ -125,6 +125,6 @@ Java targets it should run on.
 
 TODO: Add an example of how to do this.
 
-[error-prone]: https://github.com/google/error-prone
+[Error Prone]: https://github.com/google/error-prone
 [Guava]: https://github.com/google/guava
 [`@Beta`]: http://google.github.io/guava/releases/snapshot-jre/api/docs/com/google/common/annotations/Beta.html
