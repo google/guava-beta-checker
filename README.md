@@ -104,7 +104,7 @@ apply plugin: 'net.ltgt.apt'
 
 dependencies {
   // Add an APT dependency on the beta checker
-  apt group: 'com.google.guava', name: 'guava-beta-checker', version: 'HEAD-SNAPSHOT'
+  apt 'com.google.guava:guava-beta-checker:$betaCheckerVersion'
 }
 
 configurations.errorprone {
