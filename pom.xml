@@ -26,7 +26,7 @@
 
   <groupId>com.google.guava</groupId>
   <artifactId>guava-beta-checker</artifactId>
-  <version>HEAD-SNAPSHOT</version>
+  <version>1.0</version>
 
   <name>Guava Beta Checker</name>
 
