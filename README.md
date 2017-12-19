@@ -120,12 +120,53 @@ compileJava {
 ### Bazel
 
 Bazel Java targets use the Error Prone compiler by default. To use the Beta
-Checker with Bazel, you'll need to create a `java_plugin` target for the
-Beta Checker and then add that target to the `plugins` attribute of any
-Java targets it should run on.
+Checker with Bazel, you'll need to add a `maven_jar` dependency on the Beta
+Checker, then create a `java_plugin` target for it, and finally add that target
+to the `plugins` attribute of any Java targets it should run on.
 
-TODO: Add an example of how to do this.
+#### Example
+
+You'll need a `java_library` for the Beta Checker. You can get this using
+[generate-workspace], by running a command like:
+
+```shell
+bazel run //generate_workspace -- \
+    -a com.google.guava:guava:$GUAVA_VERSION \
+    -a com.google.guava:guava-beta-checker:$BETA_CHECKER_VERSION \
+    -r https://repo.maven.apache.org/maven2/
+```
+
+After putting the generated `generate_workspace.bzl` file in your project as
+described in the documentation, put the following in `third_party/BUILD`:
+
+```bazel
+load("//:generate_workspace.bzl", "generated_java_libraries")
+generated_java_libraries()
+
+java_plugin(
+    name = "guava_beta_checker_plugin",
+    deps = [":com_google_guava_guava_beta_checker"],
+    visibility = ["//visibility:public"],
+)
+```
+
+Finally, add the plugin to the `plugins` attribute of any Java target you want
+to be checked for usages of `@Beta` APIs:
+
+```bazel
+java_library(
+    name = "foo",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//third_party:com_google_guava_guava",
+    ],
+    plugins = [
+        "//third_party:guava_beta_checker_plugin",
+    ],
+)
+```
 
 [Error Prone]: https://github.com/google/error-prone
 [Guava]: https://github.com/google/guava
 [`@Beta`]: http://google.github.io/guava/releases/snapshot-jre/api/docs/com/google/common/annotations/Beta.html
+[generate-workspace]: https://docs.bazel.build/versions/master/generate-workspace.html
