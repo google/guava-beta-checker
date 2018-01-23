@@ -35,7 +35,7 @@ In `pom.xml`:
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-compiler-plugin</artifactId>
-      <version>3.5.1</version>
+      <version>3.7.0</version>
       <configuration>
         <compilerId>javac-with-errorprone</compilerId>
         <forceJavacCompilerUse>true</forceJavacCompilerUse>
@@ -54,6 +54,21 @@ In `pom.xml`:
           <arg>-Xep:BetaApi:ERROR</arg>
         </compilerArgs>
       </configuration>
+      <executions>
+        <execution>
+          <id>default-testCompile</id>
+          <phase>test-compile</phase>
+          <goals>
+            <goal>testCompile</goal>
+          </goals>
+          <configuration>
+            <!-- Disable Beta Checker for tests -->
+            <compilerArgs>
+              <arg>-Xep:BetaApi:OFF</arg>
+            </compilerArgs>
+          </configuration>
+        </execution>
+      </executions>
       <dependencies>
         <dependency>
           <groupId>org.codehaus.plexus</groupId>
