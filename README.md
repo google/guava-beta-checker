@@ -35,26 +35,38 @@ In `pom.xml`:
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-compiler-plugin</artifactId>
-      <version>3.7.0</version>
+      <version>3.8.0</version>
       <configuration>
-        <compilerId>javac-with-errorprone</compilerId>
-        <forceJavacCompilerUse>true</forceJavacCompilerUse>
         <source>1.8</source>
         <target>1.8</target>
         <annotationProcessorPaths>
+          <path>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_core</artifactId>
+            <version>2.3.2</version>
+          </path>
           <path>
             <groupId>com.google.guava</groupId>
             <artifactId>guava-beta-checker</artifactId>
             <version>${betachecker.version}</version>
           </path>
         </annotationProcessorPaths>
-        <!-- Remove these compilerArgs to keep all checks enabled -->
-        <compilerArgs>
-          <arg>-XepDisableAllChecks</arg>
-          <arg>-Xep:BetaApi:ERROR</arg>
-        </compilerArgs>
       </configuration>
       <executions>
+        <execution>
+          <id>default-compile</id>
+          <phase>compile</phase>
+          <goals>
+            <goal>compile</goal>
+          </goals>
+          <configuration>
+            <compilerArgs>
+              <arg>-XDcompilePolicy=simple</arg>
+              <!-- Remove -XepDisableAllChecks to keep all checks enabled -->
+              <arg>-Xplugin:ErrorProne -XepDisableAllChecks -Xep:BetaApi:ERROR</arg>
+            </compilerArgs>
+          </configuration>
+        </execution>
         <execution>
           <id>default-testCompile</id>
           <phase>test-compile</phase>
@@ -62,27 +74,16 @@ In `pom.xml`:
             <goal>testCompile</goal>
           </goals>
           <configuration>
-            <!-- Disable Beta Checker for tests -->
+            <!-- Disable Beta Checker for tests
+                 NOTE: in this specific case, we could just NOT enable Error Prone at all -->
             <compilerArgs>
-              <arg>-Xep:BetaApi:OFF</arg>
+              <arg>-XDcompilePolicy=simple</arg>
+              <!-- Remove -XepDisableAllChecks to keep all checks enabled -->
+              <arg>-Xplugin:ErrorProne -XepDisableAllChecks -Xep:BetaApi:OFF</arg>
             </compilerArgs>
           </configuration>
         </execution>
       </executions>
-      <dependencies>
-        <dependency>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-compiler-javac-errorprone</artifactId>
-          <version>2.5</version>
-        </dependency>
-        <dependency>
-          <groupId>com.google.errorprone</groupId>
-          <artifactId>error_prone_core</artifactId>
-          <!-- override plexus-compiler-javac-errorprone's dependency with the
-               latest Error Prone version -->
-          <version>${errorprone.version}</version>
-        </dependency>
-      </dependencies>
     </plugin>
   </plugins>
 </build>
