@@ -95,41 +95,34 @@ Your `build.gradle` file(s) should have the following things. Add them to what's
 already in your files as appropriate.
 
 ```groovy
-// Add the gradle plugins that are needed for Error Prone plugin support
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "net.ltgt.gradle:gradle-errorprone-plugin:0.0.13"
-    classpath "net.ltgt.gradle:gradle-apt-plugin:0.12"
-  }
+import net.ltgt.gradle.errorprone.CheckSeverity
+
+plugins {
+  id("java")
+  id("net.ltgt.errorprone") version "0.6"
 }
 
 repositories {
   mavenCentral()
 }
 
-apply plugin: 'java'
-
-// Enable Error Prone and APT plugins
-apply plugin: 'net.ltgt.errorprone'
-apply plugin: 'net.ltgt.apt'
-
 dependencies {
-  // Add an APT dependency on the beta checker
-  apt 'com.google.guava:guava-beta-checker:$betaCheckerVersion'
+  errorprone("com.google.errorprone:error_prone_core:2.3.2")
+  errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
+
+  // Add dependency on the beta checker
+  errorprone("com.google.guava:guava-beta-checker:$betaCheckerVersion")
 }
 
-configurations.errorprone {
-  resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.1.2'
+tasks.withType(JavaCompile).configureEach {
+  // Remove this line to keep all checks enabled
+  options.errorprone.disableAllChecks = true
+  options.errorprone.check("BetaApi", CheckSeverity.ERROR)
 }
 
-compileJava {
-  // Remove these compilerArgs to keep all checks enabled
-  options.compilerArgs += ["-XepDisableAllChecks", "-Xep:BetaApi:ERROR"]
+// Disable the beta checker for tests
+tasks.named("compileTestJava").configure {
+  options.errorprone.check("BetaApi", CheckSeverity.OFF)
 }
 ```
 
