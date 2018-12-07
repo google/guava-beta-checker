@@ -29,11 +29,13 @@ import static javax.lang.model.element.ElementKind.METHOD;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.bugpatterns.BugChecker;
 import com.google.errorprone.bugpatterns.BugChecker.IdentifierTreeMatcher;
+import com.google.errorprone.bugpatterns.BugChecker.MemberReferenceTreeMatcher;
 import com.google.errorprone.bugpatterns.BugChecker.MemberSelectTreeMatcher;
 import com.google.errorprone.matchers.Description;
 import com.google.errorprone.util.ASTHelpers;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.ImportTree;
+import com.sun.source.tree.MemberReferenceTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.Tree;
 import com.sun.tools.javac.code.Symbol;
@@ -50,7 +52,7 @@ import javax.lang.model.element.ElementKind;
  * @author Colin Decker
  */
 public abstract class AnnotatedApiUsageChecker extends BugChecker
-    implements MemberSelectTreeMatcher, IdentifierTreeMatcher {
+    implements MemberSelectTreeMatcher, IdentifierTreeMatcher, MemberReferenceTreeMatcher {
 
   private final String basePackage;
   private final String basePackagePlusDot; // Just to avoid creating this string repeatedly
@@ -81,6 +83,11 @@ public abstract class AnnotatedApiUsageChecker extends BugChecker
     // a class is subclassing a non-annotated class that has an annotated no-arg constructor.
     // TODO(cgdecker): Revisit this if/when we have a way of detecting generated super() calls.
     return isSuperCall(tree) ? NO_MATCH : matchTree(tree);
+  }
+
+  @Override
+  public final Description matchMemberReference(MemberReferenceTree tree, VisitorState state) {
+    return matchTree(tree);
   }
 
   private Description matchTree(Tree tree) {
