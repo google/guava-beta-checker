@@ -391,6 +391,52 @@ public class BetaCheckerTest {
     compiler.assertErrorsOnLines("example/Test.java", diagnostics, 9, 9, 10);
   }
 
+  @Test
+  public void testAnnotatedClass_methodReference() {
+    List<Diagnostic<? extends JavaFileObject>> diagnostics = compiler.compile(
+        BETA, ANNOTATED_CLASS,
+        JavaFileObjects.forSourceLines("example.Test",
+            "package example;",
+            "",
+            "import static java.util.stream.Collectors.joining;",
+            "",
+            "import com.google.common.foo.AnnotatedClass;",
+            "import java.util.List;",
+            "",
+            "public class Test {",
+            "  public static void foo(List<? extends AnnotatedClass> list) {", // error
+            "    String s = list.stream()",
+            "        .map(AnnotatedClass::instanceMethod)", // error
+            "        .collect(joining(", "));",
+            "  }",
+            "}")
+    );
+
+    compiler.assertErrorsOnLines("example/Test.java", diagnostics, 9, 11);
+  }
+
+  @Test
+  public void testAnnotatedClass_constructorReference() {
+    List<Diagnostic<? extends JavaFileObject>> diagnostics = compiler.compile(
+        BETA, ANNOTATED_CLASS,
+        JavaFileObjects.forSourceLines("example.Test",
+            "package example;",
+            "",
+            "import com.google.common.foo.AnnotatedClass;",
+            "import java.util.Optional;",
+            "",
+            "public class Test {",
+            "  public static void foo(Optional<AnnotatedClass> optional) {", // error
+            "    String s = optional",
+            "        .orElseGet(AnnotatedClass::new)", // error
+            "        .toString();",
+            "  }",
+            "}")
+    );
+
+    compiler.assertErrorsOnLines("example/Test.java", diagnostics, 7, 9);
+  }
+
   /**
    * A class in a com.google.common package with some members that are annotated @Beta and some
    * that aren't.
@@ -407,10 +453,13 @@ public class BetaCheckerTest {
       "  @Beta",
       "  public static final String ANNOTATED_STATIC_FIELD = \"foo\";",
       "",
-      " public final String instanceField = \"foo\";",
+      "  public final String instanceField = \"foo\";",
       "",
       "  @Beta",
       "  public final String annotatedInstanceField = \"foo\";",
+      "",
+      "  @Beta",
+      "  public AnnotatedMembers() {}",
       "",
       "  public static String staticMethod() {",
       "    return \"foo\";",
@@ -567,6 +616,52 @@ public class BetaCheckerTest {
     );
 
     compiler.assertErrorsOnLines("example/Test.java", diagnostics, 7);
+  }
+
+  @Test
+  public void testAnnotatedMembers_methodReference() {
+    List<Diagnostic<? extends JavaFileObject>> diagnostics = compiler.compile(
+        BETA, ANNOTATED_MEMBERS,
+        JavaFileObjects.forSourceLines("example.Test",
+            "package example;",
+            "",
+            "import static java.util.stream.Collectors.joining;",
+            "",
+            "import com.google.common.foo.AnnotatedMembers;",
+            "import java.util.List;",
+            "",
+            "public class Test {",
+            "  public static void foo(List<? extends AnnotatedMembers> list) {",
+            "    String s = list.stream()",
+            "        .map(AnnotatedMembers::annotatedInstanceMethod)", // error
+            "        .collect(joining(", "));",
+            "  }",
+            "}")
+    );
+
+    compiler.assertErrorsOnLines("example/Test.java", diagnostics, 11);
+  }
+
+  @Test
+  public void testAnnotatedMembers_constructorReference() {
+    List<Diagnostic<? extends JavaFileObject>> diagnostics = compiler.compile(
+        BETA, ANNOTATED_MEMBERS,
+        JavaFileObjects.forSourceLines("example.Test",
+            "package example;",
+            "",
+            "import com.google.common.foo.AnnotatedMembers;",
+            "import java.util.Optional;",
+            "",
+            "public class Test {",
+            "  public static void foo(Optional<AnnotatedMembers> optional) {",
+            "    String s = optional",
+            "        .orElseGet(AnnotatedMembers::new)", // error
+            "        .toString();",
+            "  }",
+            "}")
+    );
+
+    compiler.assertErrorsOnLines("example/Test.java", diagnostics, 9);
   }
 
   /**
