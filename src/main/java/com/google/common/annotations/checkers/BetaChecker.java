@@ -16,7 +16,6 @@
 
 package com.google.common.annotations.checkers;
 
-import static com.google.errorprone.BugPattern.Category.GUAVA;
 import static com.google.errorprone.BugPattern.LinkType.CUSTOM;
 import static com.google.errorprone.BugPattern.SeverityLevel.ERROR;
 
@@ -40,7 +39,6 @@ import java.util.Set;
   explanation = "@Beta APIs should not be used in library code as they are subject to change.",
   linkType = CUSTOM,
   link = "https://github.com/google/guava/wiki/PhilosophyExplained#beta-apis",
-  category = GUAVA,
   severity = ERROR
 )
 public final class BetaChecker extends AnnotatedApiUsageChecker {
