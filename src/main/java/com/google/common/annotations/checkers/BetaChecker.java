@@ -34,13 +34,12 @@ import java.util.Set;
  */
 @AutoService(BugChecker.class)
 @BugPattern(
-  name = "BetaApi",
-  summary = "@Beta APIs should not be used in library code as they are subject to change",
-  explanation = "@Beta APIs should not be used in library code as they are subject to change.",
-  linkType = CUSTOM,
-  link = "https://github.com/google/guava/wiki/PhilosophyExplained#beta-apis",
-  severity = ERROR
-)
+    name = "BetaApi",
+    summary = "@Beta APIs should not be used in library code as they are subject to change",
+    explanation = "@Beta APIs should not be used in library code as they are subject to change.",
+    linkType = CUSTOM,
+    link = "https://github.com/google/guava/wiki/PhilosophyExplained#beta-apis",
+    severity = ERROR)
 public final class BetaChecker extends AnnotatedApiUsageChecker {
 
   /** Specific @Beta types to ignore. */
