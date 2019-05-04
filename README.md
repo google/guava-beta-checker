@@ -94,12 +94,45 @@ In `pom.xml`:
 Your `build.gradle` file(s) should have the following things. Add them to what's
 already in your files as appropriate.
 
+<details open>
+<summary>Using the Groovy DSL</summary>
+
 ```groovy
-import net.ltgt.gradle.errorprone.CheckSeverity
+plugins {
+  id("java")
+  id("net.ltgt.errorprone") version "0.8"
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  errorprone "com.google.errorprone:error_prone_core:2.3.2"
+  errorproneJavac "com.google.errorprone:javac:9+181-r4173-1"
+
+  // Add dependency on the beta checker
+  // NOTE: added here to `annotationProcessor` so it's only enabled for the main classes
+  annotationProcessor "com.google.guava:guava-beta-checker:$betaCheckerVersion"
+}
+
+// Remove this block to keep all checks enabled (default behavior)
+tasks.named("compileJava").configure {
+  options.errorprone.disableAllChecks = true
+  options.errorprone.error("BetaApi")
+}
+```
+
+</details>
+<details>
+<summary>Using the Kotlin DSL</summary>
+
+```kotlin
+import net.ltgt.gradle.errorprone.errorprone
 
 plugins {
   id("java")
-  id("net.ltgt.errorprone") version "0.6"
+  id("net.ltgt.errorprone") version "0.8"
 }
 
 repositories {
@@ -111,20 +144,18 @@ dependencies {
   errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
 
   // Add dependency on the beta checker
-  errorprone("com.google.guava:guava-beta-checker:$betaCheckerVersion")
+  // NOTE: added here to `annotationProcessor` so it's only enabled for the main classes
+  annotationProcessor("com.google.guava:guava-beta-checker:$betaCheckerVersion")
 }
 
-tasks.withType(JavaCompile).configureEach {
-  // Remove this line to keep all checks enabled
-  options.errorprone.disableAllChecks = true
-  options.errorprone.check("BetaApi", CheckSeverity.ERROR)
-}
-
-// Disable the beta checker for tests
-tasks.named("compileTestJava").configure {
-  options.errorprone.check("BetaApi", CheckSeverity.OFF)
+// Remove this block to keep all checks enabled (default behavior)
+tasks.compileJava {
+  options.errorprone.disableAllChecks.set(true)
+  options.errorprone.error("BetaApi")
 }
 ```
+
+</details>
 
 ### Bazel
 
