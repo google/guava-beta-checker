@@ -59,21 +59,21 @@
       it in the properties section of
       https://github.com/google/error-prone/blob/v${errorprone.version}/pom.xml
       -->
-    <errorprone.version>2.1.2</errorprone.version>
-    <javac.version>9-dev-r4023-3</javac.version>
+    <errorprone.version>2.3.3</errorprone.version>
+    <javac.version>9+181-r4173-1</javac.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.google.auto.service</groupId>
       <artifactId>auto-service</artifactId>
-      <version>1.0-rc3</version>
+      <version>1.0-rc6</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>23.2-jre</version>
+      <version>28.1-jre</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -85,7 +85,7 @@
     <dependency>
       <groupId>com.google.testing.compile</groupId>
       <artifactId>compile-testing</artifactId>
-      <version>0.15</version>
+      <version>0.18</version>
       <scope>test</scope>
     </dependency>
     <dependency>
