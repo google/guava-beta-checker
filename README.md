@@ -37,26 +37,38 @@ In `pom.xml`:
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-compiler-plugin</artifactId>
-      <version>3.7.0</version>
+      <version>3.8.0</version>
       <configuration>
-        <compilerId>javac-with-errorprone</compilerId>
-        <forceJavacCompilerUse>true</forceJavacCompilerUse>
         <source>1.8</source>
         <target>1.8</target>
         <annotationProcessorPaths>
+          <path>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_core</artifactId>
+            <version>2.3.3</version>
+          </path>
           <path>
             <groupId>com.google.guava</groupId>
             <artifactId>guava-beta-checker</artifactId>
             <version>${betachecker.version}</version>
           </path>
         </annotationProcessorPaths>
-        <!-- Remove these compilerArgs to keep all checks enabled -->
-        <compilerArgs>
-          <arg>-XepDisableAllChecks</arg>
-          <arg>-Xep:BetaApi:ERROR</arg>
-        </compilerArgs>
       </configuration>
       <executions>
+        <execution>
+          <id>default-compile</id>
+          <phase>compile</phase>
+          <goals>
+            <goal>compile</goal>
+          </goals>
+          <configuration>
+            <compilerArgs>
+              <arg>-XDcompilePolicy=simple</arg>
+              <!-- Remove -XepDisableAllChecks to keep all checks enabled -->
+              <arg>-Xplugin:ErrorProne -XepDisableAllChecks -Xep:BetaApi:ERROR</arg>
+            </compilerArgs>
+          </configuration>
+        </execution>
         <execution>
           <id>default-testCompile</id>
           <phase>test-compile</phase>
@@ -64,27 +76,16 @@ In `pom.xml`:
             <goal>testCompile</goal>
           </goals>
           <configuration>
-            <!-- Disable Beta Checker for tests -->
+            <!-- Disable Beta Checker for tests
+                 NOTE: in this specific case, we could just NOT enable Error Prone at all -->
             <compilerArgs>
-              <arg>-Xep:BetaApi:OFF</arg>
+              <arg>-XDcompilePolicy=simple</arg>
+              <!-- Remove -XepDisableAllChecks to keep all checks enabled -->
+              <arg>-Xplugin:ErrorProne -XepDisableAllChecks -Xep:BetaApi:OFF</arg>
             </compilerArgs>
           </configuration>
         </execution>
       </executions>
-      <dependencies>
-        <dependency>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-compiler-javac-errorprone</artifactId>
-          <version>2.5</version>
-        </dependency>
-        <dependency>
-          <groupId>com.google.errorprone</groupId>
-          <artifactId>error_prone_core</artifactId>
-          <!-- override plexus-compiler-javac-errorprone's dependency with the
-               latest Error Prone version -->
-          <version>${errorprone.version}</version>
-        </dependency>
-      </dependencies>
     </plugin>
   </plugins>
 </build>
@@ -95,44 +96,68 @@ In `pom.xml`:
 Your `build.gradle` file(s) should have the following things. Add them to what's
 already in your files as appropriate.
 
+<details open>
+<summary>Using the Groovy DSL</summary>
+
 ```groovy
-// Add the gradle plugins that are needed for Error Prone plugin support
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "net.ltgt.gradle:gradle-errorprone-plugin:0.0.13"
-    classpath "net.ltgt.gradle:gradle-apt-plugin:0.12"
-  }
+plugins {
+  id("java")
+  id("net.ltgt.errorprone") version "0.8"
 }
 
 repositories {
   mavenCentral()
 }
 
-apply plugin: 'java'
-
-// Enable Error Prone and APT plugins
-apply plugin: 'net.ltgt.errorprone'
-apply plugin: 'net.ltgt.apt'
-
 dependencies {
-  // Add an APT dependency on the beta checker
-  apt 'com.google.guava:guava-beta-checker:$betaCheckerVersion'
+  errorprone "com.google.errorprone:error_prone_core:2.3.3"
+  errorproneJavac "com.google.errorprone:javac:9+181-r4173-1"
+
+  // Add dependency on the beta checker
+  // NOTE: added here to `annotationProcessor` so it's only enabled for the main classes
+  annotationProcessor "com.google.guava:guava-beta-checker:$betaCheckerVersion"
 }
 
-configurations.errorprone {
-  resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.1.2'
-}
-
-compileJava {
-  // Remove these compilerArgs to keep all checks enabled
-  options.compilerArgs += ["-XepDisableAllChecks", "-Xep:BetaApi:ERROR"]
+// Remove this block to keep all checks enabled (default behavior)
+tasks.named("compileJava").configure {
+  options.errorprone.disableAllChecks = true
+  options.errorprone.error("BetaApi")
 }
 ```
+
+</details>
+<details>
+<summary>Using the Kotlin DSL</summary>
+
+```kotlin
+import net.ltgt.gradle.errorprone.errorprone
+
+plugins {
+  id("java")
+  id("net.ltgt.errorprone") version "0.8"
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  errorprone("com.google.errorprone:error_prone_core:2.3.3")
+  errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
+
+  // Add dependency on the beta checker
+  // NOTE: added here to `annotationProcessor` so it's only enabled for the main classes
+  annotationProcessor("com.google.guava:guava-beta-checker:$betaCheckerVersion")
+}
+
+// Remove this block to keep all checks enabled (default behavior)
+tasks.compileJava {
+  options.errorprone.disableAllChecks.set(true)
+  options.errorprone.error("BetaApi")
+}
+```
+
+</details>
 
 ### Bazel
 
