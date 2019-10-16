@@ -1,3 +1,5 @@
+[![Maven Central](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/com/google/guava/guava-beta-checker/maven-metadata.xml.svg?colorB=007ec6)](https://maven-badges.herokuapp.com/maven-central/com.google.guava/guava-beta-checker)
+
 # Guava Beta Checker
 
 An [Error Prone] plugin that checks for usages of [Guava] APIs that are
