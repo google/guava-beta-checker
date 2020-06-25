@@ -210,5 +210,5 @@ java_library(
 
 [Error Prone]: https://github.com/google/error-prone
 [Guava]: https://github.com/google/guava
-[`@Beta`]: http://google.github.io/guava/releases/snapshot-jre/api/docs/com/google/common/annotations/Beta.html
+[`@Beta`]: https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/annotations/Beta.html
 [generate-workspace]: https://docs.bazel.build/versions/master/generate-workspace.html
