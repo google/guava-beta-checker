@@ -18,7 +18,6 @@ src/main/java/foo/MyClass.java:14: error: [BetaApi] @Beta APIs should not be use
 
 ## Usage
 
-
 Using the Beta Checker requires configuring your project to build with the Error
 Prone Java compiler. By default, this enables a lot of useful checks for a
 variety of common bugs. However, if you just want to use the Beta Checker, the
