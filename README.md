@@ -1,4 +1,5 @@
-[![Maven Central](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/com/google/guava/guava-beta-checker/maven-metadata.xml.svg?colorB=007ec6)](https://maven-badges.herokuapp.com/maven-central/com.google.guava/guava-beta-checker)
+[![Build Status](https://travis-ci.org/google/guava-beta-checker.svg?branch=master)](https://travis-ci.org/google/jimfs)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.google.guava/guava-beta-checker/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.google.guava/guava-beta-checker)
 
 # Guava Beta Checker
 
