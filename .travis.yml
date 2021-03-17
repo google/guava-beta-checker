@@ -10,9 +10,6 @@ install: mvn install -U -DskipTests=true
 
 script: mvn verify -U -Dmaven.javadoc.skip=true
 
-after_success:
-  - util/deploy_snapshot.sh
-
 cache:
   directories:
   - $HOME/.m2

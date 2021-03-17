@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/google/guava-beta-checker.svg?branch=master)](https://travis-ci.org/google/jimfs)
+[![Build Status](https://github.com/google/guava-beta-checker/workflows/CI/badge.svg?branch=master)](https://github.com/google/guava-beta-checker/actions)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.google.guava/guava-beta-checker/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.google.guava/guava-beta-checker)
 
 # Guava Beta Checker
