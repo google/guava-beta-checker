@@ -27,7 +27,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.io.Files;
 import com.google.common.primitives.Longs;
 import com.google.errorprone.BaseErrorProneJavaCompiler;
-import com.google.errorprone.BugPattern;
+import com.google.errorprone.BugCheckerInfo;
 import com.google.errorprone.bugpatterns.BugChecker;
 import com.google.errorprone.scanner.ScannerSupplier;
 import java.io.File;
@@ -117,7 +117,7 @@ final class TestCompiler {
       actualErrors.put(diagnostic.getSource().getName(), diagnostic.getLineNumber());
 
       // any errors from the compiler that are not related to this checker should fail
-      assertThat(message).contains("[" + checker.getAnnotation(BugPattern.class).name() + "]");
+      assertThat(message).contains("[" + BugCheckerInfo.create(checker).canonicalName() + "]");
     }
 
     assertEquals(
