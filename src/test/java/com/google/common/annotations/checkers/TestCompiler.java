@@ -95,13 +95,11 @@ final class TestCompiler {
     }
   }
 
-  /**
-   * Asserts that the given diagnostics contain errors with a message containing "[CheckerName]"
-   * on the given lines of the given file. If there should be multiple errors on a line, the line
-   * number must appear multiple times. There may not be any errors in any other file.
-   */
-  public void assertErrorsOnLines(String file,
-      List<Diagnostic<? extends JavaFileObject>> diagnostics, long... lines) {
+  private void assertErrorsOnLines(
+      String file,
+      List<Diagnostic<? extends JavaFileObject>> diagnostics,
+      long[] lines,
+      boolean omitDuplicateLines) {
     ListMultimap<String, Long> actualErrors = ArrayListMultimap.create();
     for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
       String message = diagnostic.getMessage(Locale.US);
@@ -114,7 +112,11 @@ final class TestCompiler {
           "unexpected error in source file " + sourceName + ": " + message,
           file, sourceName);
 
-      actualErrors.put(diagnostic.getSource().getName(), diagnostic.getLineNumber());
+      long lineNumber = diagnostic.getLineNumber();
+      boolean omit = omitDuplicateLines && actualErrors.containsEntry(sourceName, lineNumber);
+      if (!omit) {
+        actualErrors.put(sourceName, lineNumber);
+      }
 
       // any errors from the compiler that are not related to this checker should fail
       assertThat(message).contains("[" + BugCheckerInfo.create(checker).canonicalName() + "]");
@@ -123,5 +125,25 @@ final class TestCompiler {
     assertEquals(
         ImmutableMultiset.copyOf(Longs.asList(lines)),
         ImmutableMultiset.copyOf(actualErrors.get(file)));
+  }
+
+  /**
+   * Asserts that the given diagnostics contain errors with a message containing "[CheckerName]" on
+   * the given lines of the given file. If there should be multiple errors on a line, the line
+   * number must appear multiple times. There may not be any errors in any other file.
+   */
+  public void assertErrorsOnLines(
+      String file, List<Diagnostic<? extends JavaFileObject>> diagnostics, long... lines) {
+    assertErrorsOnLines(file, diagnostics, lines, false);
+  }
+
+  /**
+   * Asserts that the given diagnostics contain errors with a message containing "[CheckerName]" on
+   * the given lines of the given file. Each line is only counted once, even if there are multiple
+   * errors on it.
+   */
+  public void assertErrorsOnUniqueLines(
+      String file, List<Diagnostic<? extends JavaFileObject>> diagnostics, long... lines) {
+    assertErrorsOnLines(file, diagnostics, lines, true);
   }
 }

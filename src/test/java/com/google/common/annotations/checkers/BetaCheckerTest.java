@@ -412,7 +412,7 @@ public class BetaCheckerTest {
             "}")
     );
 
-    compiler.assertErrorsOnLines("example/Test.java", diagnostics, 9, 11);
+    compiler.assertErrorsOnUniqueLines("example/Test.java", diagnostics, 9, 11);
   }
 
   @Test
@@ -434,7 +434,7 @@ public class BetaCheckerTest {
             "}")
     );
 
-    compiler.assertErrorsOnLines("example/Test.java", diagnostics, 7, 9);
+    compiler.assertErrorsOnUniqueLines("example/Test.java", diagnostics, 7, 9);
   }
 
   /**
