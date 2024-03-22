@@ -26,6 +26,7 @@ import static javax.lang.model.element.ElementKind.FIELD;
 import static javax.lang.model.element.ElementKind.INTERFACE;
 import static javax.lang.model.element.ElementKind.METHOD;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.bugpatterns.BugChecker;
 import com.google.errorprone.bugpatterns.BugChecker.IdentifierTreeMatcher;
@@ -57,12 +58,12 @@ public abstract class AnnotatedApiUsageChecker extends BugChecker
   private final String basePackage;
   private final String basePackagePlusDot; // Just to avoid creating this string repeatedly
 
-  protected final String annotationType;
+  private final ImmutableSet<String> annotationTypes;
 
-  protected AnnotatedApiUsageChecker(String basePackage, String annotationType) {
+  protected AnnotatedApiUsageChecker(String basePackage, String... annotationTypes) {
     this.basePackage = basePackage;
     this.basePackagePlusDot = basePackage + ".";
-    this.annotationType = annotationType;
+    this.annotationTypes = ImmutableSet.copyOf(annotationTypes);
   }
 
   @Override
@@ -140,7 +141,7 @@ public abstract class AnnotatedApiUsageChecker extends BugChecker
     }
 
     for (AnnotationMirror annotation : symbol.getAnnotationMirrors()) {
-      if (annotation.getAnnotationType().toString().equals(annotationType)) {
+      if (annotationTypes.contains(annotation.getAnnotationType().toString())) {
         return true;
       }
     }
