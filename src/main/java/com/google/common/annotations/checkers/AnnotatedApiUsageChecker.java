@@ -17,6 +17,7 @@
 package com.google.common.annotations.checkers;
 
 import static com.google.errorprone.matchers.Description.NO_MATCH;
+import static com.google.errorprone.util.ASTHelpers.enclosingPackage;
 import static javax.lang.model.element.ElementKind.ANNOTATION_TYPE;
 import static javax.lang.model.element.ElementKind.CLASS;
 import static javax.lang.model.element.ElementKind.CONSTRUCTOR;
@@ -111,7 +112,7 @@ public abstract class AnnotatedApiUsageChecker extends BugChecker
    * under it.
    */
   private boolean isInMatchingPackage(Symbol symbol) {
-    String packageName = symbol.packge().fullname.toString();
+    String packageName = enclosingPackage(symbol).fullname.toString();
     return !isIgnoredPackage(packageName)
         && (packageName.equals(basePackage) || packageName.startsWith(basePackagePlusDot));
   }
