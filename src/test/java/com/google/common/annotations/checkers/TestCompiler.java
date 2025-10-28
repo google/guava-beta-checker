@@ -78,7 +78,7 @@ final class TestCompiler {
             new PrintWriter(System.err, true),
             null /*filemanager*/,
             collector,
-            ImmutableList.of("-d", tmpDir.getAbsolutePath()),
+            ImmutableList.of("-proc:none", "-d", tmpDir.getAbsolutePath()),
             null /*classes*/,
             sources);
     try {
