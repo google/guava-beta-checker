@@ -41,6 +41,7 @@ import com.sun.source.tree.MemberReferenceTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.Tree;
 import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import com.sun.tools.javac.util.Name;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -112,7 +113,12 @@ public abstract class AnnotatedApiUsageChecker extends BugChecker
    * under it.
    */
   private boolean isInMatchingPackage(Symbol symbol) {
-    String packageName = enclosingPackage(symbol).fullname.toString();
+    PackageSymbol packageSymbol = enclosingPackage(symbol);
+    if (packageSymbol == null) {
+      // Modules don't have an enclosing package
+      return false;
+    }
+    String packageName = packageSymbol.fullname.toString();
     return !isIgnoredPackage(packageName)
         && (packageName.equals(basePackage) || packageName.startsWith(basePackagePlusDot));
   }
