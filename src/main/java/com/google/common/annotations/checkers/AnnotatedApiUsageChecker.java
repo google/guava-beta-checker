@@ -17,6 +17,7 @@
 package com.google.common.annotations.checkers;
 
 import static com.google.errorprone.matchers.Description.NO_MATCH;
+import static com.google.errorprone.util.ASTHelpers.enclosingPackage;
 import static javax.lang.model.element.ElementKind.ANNOTATION_TYPE;
 import static javax.lang.model.element.ElementKind.CLASS;
 import static javax.lang.model.element.ElementKind.CONSTRUCTOR;
@@ -121,18 +122,6 @@ public abstract class AnnotatedApiUsageChecker extends BugChecker
     String packageName = packageSymbol.get().fullname.toString();
     return !isIgnoredPackage(packageName)
         && (packageName.equals(basePackage) || packageName.startsWith(basePackagePlusDot));
-  }
-
-  // TODO: b/490011407 - replace with ASTHelpers.enclosingPackage
-  private static Optional<PackageSymbol> enclosingPackage(Symbol sym) {
-    Symbol curr = sym;
-    while (curr != null) {
-      if (curr.getKind().equals(ElementKind.PACKAGE)) {
-        return Optional.of((PackageSymbol) curr);
-      }
-      curr = curr.owner;
-    }
-    return Optional.empty();
   }
 
   /**
