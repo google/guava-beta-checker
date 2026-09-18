@@ -4,7 +4,7 @@
 # Guava Beta Checker
 
 An [Error Prone] plugin that checks for usages of [Guava] APIs that are
-annotated with the [`@Beta`] annotation. Such APIs should _never_ be used in
+annotated with the [`@Beta`] annotation. Such APIs should *never* be used in
 library code that other projects may depend on; using the Beta Checker can help
 library projects ensure that they don't use them.
 
